@@ -16,11 +16,15 @@ let resultText = document.getElementById("result");
 let leftPokemon = null;
 let rightPokemon = null;
 let score = 0;
+let roundLocked = false;
 
-async function getPokemon() {
-    let id = Math.floor(Math.random() * 1025) + 1;
+function setChoiceButtonsDisabled(disabled) {
+    leftBtn.disabled = disabled;
+    rightBtn.disabled = disabled;
+}
+
+async function getPokemonById(id) {
     let url = "https://pokeapi.co/api/v2/pokemon/" + id;
-
     let response = await fetch(url);
 
     if (!response.ok) {
@@ -32,10 +36,25 @@ async function getPokemon() {
     let totalStats = data.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
 
     return {
+        id: data.id,
         name: data.name,
         image: data.sprites.front_default,
         total: totalStats
     };
+}
+
+async function getTwoDifferentPokemon() {
+    let leftId = Math.floor(Math.random() * 1025) + 1;
+    let rightId = Math.floor(Math.random() * 1025) + 1;
+
+    while (rightId === leftId) {
+        rightId = Math.floor(Math.random() * 1025) + 1;
+    }
+
+    let left = await getPokemonById(leftId);
+    let right = await getPokemonById(rightId);
+
+    return { left, right };
 }
 
 function capitalize(name) {
@@ -43,22 +62,35 @@ function capitalize(name) {
 }
 
 async function loadRound() {
+    roundLocked = true;
+    setChoiceButtonsDisabled(true);
+
+    resultText.className = "";
     resultText.innerHTML = "Loading...";
 
     try {
-        leftPokemon = await getPokemon();
-        rightPokemon = await getPokemon();
+        let pair = await getTwoDifferentPokemon();
+        leftPokemon = pair.left;
+        rightPokemon = pair.right;
 
         leftName.innerHTML = capitalize(leftPokemon.name);
         rightName.innerHTML = capitalize(rightPokemon.name);
 
-        leftImg.src = leftPokemon.image;
-        rightImg.src = rightPokemon.image;
+        leftImg.src = leftPokemon.image || "";
+        rightImg.src = rightPokemon.image || "";
 
-        resultText.innerHTML = "";
+        leftImg.alt = capitalize(leftPokemon.name);
+        rightImg.alt = capitalize(rightPokemon.name);
+
+        resultText.innerHTML = "Choose the Pokémon with the higher total stats.";
+        roundLocked = false;
+        setChoiceButtonsDisabled(false);
     } catch (error) {
         console.error(error);
+        resultText.className = "wrong";
         resultText.innerHTML = "Error loading Pokémon. Please try again.";
+        startBtn.style.display = "inline-block";
+        startBtn.innerHTML = "Play Again";
     }
 }
 
@@ -73,21 +105,43 @@ startBtn.addEventListener("click", async function () {
 });
 
 function handleChoice(choice) {
+    if (roundLocked || !leftPokemon || !rightPokemon) {
+        return;
+    }
+
+    roundLocked = true;
+    setChoiceButtonsDisabled(true);
+
+    let isTie = leftPokemon.total === rightPokemon.total;
+
     let correct =
-        (choice === "left" && leftPokemon.total >= rightPokemon.total) ||
-        (choice === "right" && rightPokemon.total >= leftPokemon.total);
+        isTie ||
+        (choice === "left" && leftPokemon.total > rightPokemon.total) ||
+        (choice === "right" && rightPokemon.total > leftPokemon.total);
 
     if (correct) {
         score++;
         scoreText.innerHTML = "Score: " + score;
-        resultText.innerHTML =
-            "Correct! " +
-            capitalize(leftPokemon.name) + ": " + leftPokemon.total +
-            " vs " +
-            capitalize(rightPokemon.name) + ": " + rightPokemon.total;
 
-        setTimeout(loadRound, 1200);
+        if (isTie) {
+            resultText.className = "correct";
+            resultText.innerHTML =
+                "Draw! Free point! " +
+                capitalize(leftPokemon.name) + ": " + leftPokemon.total +
+                " vs " +
+                capitalize(rightPokemon.name) + ": " + rightPokemon.total;
+        } else {
+            resultText.className = "correct";
+            resultText.innerHTML =
+                "Correct! " +
+                capitalize(leftPokemon.name) + ": " + leftPokemon.total +
+                " vs " +
+                capitalize(rightPokemon.name) + ": " + rightPokemon.total;
+        }
+
+        setTimeout(loadRound, 1400);
     } else {
+        resultText.className = "wrong";
         resultText.innerHTML =
             "Wrong! Final Score: " + score +
             "<br>" +
