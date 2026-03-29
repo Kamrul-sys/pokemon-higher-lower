@@ -2,33 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Cache-busting CSS -->
+    <link rel="stylesheet" href="style.css?v=3">
+
     <title>Pokémon Higher or Lower</title>
-    <link rel="stylesheet" href="style.css?v=2">
 </head>
+
 <body>
-    <h1>Pokémon Higher or Lower</h1>
-    <p id="score">Score: 0</p>
 
-    <button id="startBtn">Start Game</button>
+    <div id="pageWrap">
 
-    <div id="game" style="display: none;">
-        <div class="container">
-            <div class="card">
-                <img id="leftImg" src="" alt="Left Pokémon">
-                <p id="leftName">Left Pokémon</p>
-                <button id="leftBtn">Choose Left</button>
+        <h1>Pokémon Higher or Lower</h1>
+
+        <p id="score">Score: 0</p>
+
+        <button id="startBtn">Start Game</button>
+
+        <div id="game" style="display: none;">
+
+            <div class="container">
+
+                <!-- LEFT CARD -->
+                <div class="card">
+                    <img id="leftImg" src="" alt="Left Pokémon">
+                    <p id="leftName">...</p>
+                    <button id="leftBtn">Choose Left</button>
+                </div>
+
+                <!-- RIGHT CARD -->
+                <div class="card">
+                    <img id="rightImg" src="" alt="Right Pokémon">
+                    <p id="rightName">...</p>
+                    <button id="rightBtn">Choose Right</button>
+                </div>
+
             </div>
 
-            <div class="card">
-                <img id="rightImg" src="" alt="Right Pokémon">
-                <p id="rightName">Right Pokémon</p>
-                <button id="rightBtn">Choose Right</button>
-            </div>
+            <p id="result"></p>
+
         </div>
 
-        <p id="result"></p>
     </div>
-    <script src="script.js?v=2"></script>
+
+    <!-- Cache-busting JS -->
+    <script src="script.js?v=3"></script>
 
 </body>
 </html>
