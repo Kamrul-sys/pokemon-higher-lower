@@ -17,7 +17,6 @@ let leftPokemon = null;
 let rightPokemon = null;
 let score = 0;
 let roundLocked = false;
-
 function setChoiceButtonsDisabled(disabled) {
     leftBtn.disabled = disabled;
     rightBtn.disabled = disabled;
