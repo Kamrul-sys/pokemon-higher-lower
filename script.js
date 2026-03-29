@@ -148,7 +148,8 @@ function handleChoice(choice) {
             " vs " +
             capitalize(rightPokemon.name) + ": " + rightPokemon.total;
 
-        startBtn.style.display = "inline-block";
+       startBtn.style.display = "block";
+        startBtn.style.margin = "0 auto 18px auto";
         startBtn.innerHTML = "Play Again";
     }
 }
