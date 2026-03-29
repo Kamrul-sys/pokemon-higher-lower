@@ -8,8 +8,27 @@
 <body>
 
     <h1>Pokémon Higher or Lower</h1>
+    <p id="score">Score: 0</p>
 
     <button id="startBtn">Start Game</button>
+
+    <div id="game" style="display: none;">
+        <div class="container">
+            <div class="card">
+                <img id="leftImg" src="" alt="Left Pokémon">
+                <p id="leftName">Left Pokémon</p>
+                <button id="leftBtn">Choose Left</button>
+            </div>
+
+            <div class="card">
+                <img id="rightImg" src="" alt="Right Pokémon">
+                <p id="rightName">Right Pokémon</p>
+                <button id="rightBtn">Choose Right</button>
+            </div>
+        </div>
+
+        <p id="result"></p>
+    </div>
 
     <script src="script.js"></script>
 
