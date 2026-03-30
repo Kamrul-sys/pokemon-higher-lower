@@ -17,41 +17,41 @@ let leftPokemon = null;
 let rightPokemon = null;
 let score = 0;
 let roundLocked = false;
+let pokemonList = [];
+
 function setChoiceButtonsDisabled(disabled) {
     leftBtn.disabled = disabled;
     rightBtn.disabled = disabled;
 }
 
-async function getPokemonById(id) {
-    let url = "https://pokeapi.co/api/v2/pokemon/" + id;
-    let response = await fetch(url);
+async function loadPokemonData() {
+    let response = await fetch("./pokemon-data.json");
 
     if (!response.ok) {
-        throw new Error("Could not fetch Pokémon");
+        throw new Error("Could not load Pokémon data");
     }
 
     let data = await response.json();
 
-    let totalStats = data.stats.reduce((sum, stat) => sum + stat.base_stat, 0);
-
-    return {
-        id: data.id,
-        name: data.name,
-        image: data.sprites.front_default,
-        total: totalStats
-    };
-}
-
-async function getTwoDifferentPokemon() {
-    let leftId = Math.floor(Math.random() * 1025) + 1;
-    let rightId = Math.floor(Math.random() * 1025) + 1;
-
-    while (rightId === leftId) {
-        rightId = Math.floor(Math.random() * 1025) + 1;
+    if (!Array.isArray(data) || data.length < 2) {
+        throw new Error("Pokémon data is missing or invalid");
     }
 
-    let left = await getPokemonById(leftId);
-    let right = await getPokemonById(rightId);
+    pokemonList = data;
+}
+
+function getRandomPokemon() {
+    let index = Math.floor(Math.random() * pokemonList.length);
+    return pokemonList[index];
+}
+
+function getTwoDifferentPokemon() {
+    let left = getRandomPokemon();
+    let right = getRandomPokemon();
+
+    while (right.id === left.id) {
+        right = getRandomPokemon();
+    }
 
     return { left, right };
 }
@@ -68,7 +68,7 @@ async function loadRound() {
     resultText.innerHTML = "Loading...";
 
     try {
-        let pair = await getTwoDifferentPokemon();
+        let pair = getTwoDifferentPokemon();
         leftPokemon = pair.left;
         rightPokemon = pair.right;
 
@@ -100,7 +100,19 @@ startBtn.addEventListener("click", async function () {
     startBtn.style.display = "none";
     gameDiv.style.display = "block";
 
-    await loadRound();
+    try {
+        if (pokemonList.length === 0) {
+            await loadPokemonData();
+        }
+
+        await loadRound();
+    } catch (error) {
+        console.error(error);
+        resultText.className = "wrong";
+        resultText.innerHTML = "Could not load game data.";
+        startBtn.style.display = "inline-block";
+        startBtn.innerHTML = "Try Again";
+    }
 });
 
 function handleChoice(choice) {
@@ -148,7 +160,7 @@ function handleChoice(choice) {
             " vs " +
             capitalize(rightPokemon.name) + ": " + rightPokemon.total;
 
-       startBtn.style.display = "block";
+        startBtn.style.display = "block";
         startBtn.style.margin = "0 auto 18px auto";
         startBtn.innerHTML = "Play Again";
     }
