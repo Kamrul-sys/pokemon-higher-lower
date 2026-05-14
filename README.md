@@ -1,40 +1,32 @@
 # Pokémon Higher or Lower
 
-An interactive browser game where you guess which Pokémon has higher total base stats.
+Pokémon Higher or Lower is a small browser game where you compare two Pokémon and guess which one has the higher total base stats.
 
-🔗 Play the game:  
+You can play the GitHub Pages version here:
+
 https://kamrul-sys.github.io/pokemon-higher-lower/
 
----
+You can also play it on my blog here:
 
-## Features
+https://kami-media.blogspot.com/p/pokemon-higher-or-lower-game.html
 
-- Random Pokémon comparison  
-- Score system  
-- Equal stats = free point  
-- Clean UI and mobile support  
+I made this as a JavaScript web game and as an experiment with Pokémon data. Instead of calling the PokéAPI every time someone plays, the game uses a local JSON file that was generated beforehand.
 
----
+The data was originally fetched from the public PokéAPI with a separate script. That script collects the Pokémon data once and saves it locally, so the game itself can run without live API requests during gameplay. This makes the game faster, more stable, and avoids unnecessary API calls.
 
-## How it works
+The game includes a score system, random Pokémon comparisons, and a small rule where equal stats count as a free point.
 
-This game uses a pre-generated JSON file containing Pokémon data.
+I wrote more about this project here:
 
-The data was originally fetched from the public PokéAPI using a separate script (JSON builder).
-This script retrieves Pokémon data once and stores it locally, so the game itself does not make live API requests during gameplay.
+Building the game:
+https://kami-media.blogspot.com/2026/03/pokemon-higher-lower-game-javascript.html
 
-This approach avoids unnecessary API calls and ensures stable performance even with many users.
+Using local JSON instead of live API calls:
+https://kami-media.blogspot.com/2026/04/pokemon-api-game-json-optimization.html
 
----
+More of my projects are collected here:
 
-## Tech
-
-- HTML  
-- CSS  
-- JavaScript  
-- PokéAPI (used for initial data generation)  
-
----
+https://kami-media.blogspot.com/p/projects.html
 
 ## Disclaimer
 
